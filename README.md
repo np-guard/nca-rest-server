@@ -39,7 +39,7 @@ Each post returns a unique identifier for the posted set of network policies.
 This identifier can be used to later query NCA findings on this set.
 For example, loading network policies from a JSON file with a list of network policies can be done as follows.
 ```shell
-curl -X POST -H Content-Type:application/json -d @tests/basic/networkpolicies.json localhost:5000/policy_sets
+curl -X POST -H Content-Type:application/json -d @tests/basic/testcase2-networkpolicies.json localhost:5000/policy_sets
 ```
 A valid response code should be 201, and the response body should include the set id, e.g., `set_0`.
 

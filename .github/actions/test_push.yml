@@ -1,0 +1,40 @@
+name: test-push
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rest-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: actions/setup-python@5ccb29d8773c3f3f653e1705f474dfaa8a06a912
+        with:
+          python-version: 3.8
+          architecture: x64
+      - run: pip install -r requirements.txt
+      - run: |
+          python -m nca_rest_server &
+          NCA_PID=$!
+          while true; do  # wait until REST server becomes responsive
+            curl_status=0
+            curl localhost:5000 || curl_status=$?
+            [ $curl_status -gt 0 ]  || break
+            sleep 1
+          done
+          curl -X POST -H Content-Type:application/json -d @tests/basic/ns_list.json localhost:5000/namespace_list
+          curl -X POST -H Content-Type:application/json -d @tests/basic/pods_list.json localhost:5000/pod_list
+          curl -X POST -H Content-Type:application/json -d @tests/basic/testcase1-networkpolicy1.json localhost:5000/policy_sets
+          curl -X POST -H Content-Type:application/json -d @tests/basic/testcase2-networkpolicies.json localhost:5000/policy_sets
+          curl localhost:5000/policy_sets/set_0/findings -o testcase1_findings.json
+          diff testcase1_findings.json tests/basic/testcase1_expected_findings.json
+          curl localhost:5000/policy_sets/set_1/findings -o testcase2_findings.json
+          diff testcase2_findings.json tests/basic/testcase2_expected_findings.json
+          kill $NCA_PID
