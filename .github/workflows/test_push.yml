@@ -22,7 +22,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install flake8
       - name: Lint with flake8
-        run: flake8 nca --count --max-complexity=15 --max-line-length=127 --statistics
+        run: flake8 nca_rest_server --count --max-complexity=15 --max-line-length=127 --statistics
 
   rest-api:
     runs-on: ubuntu-latest
