@@ -106,8 +106,8 @@ class PolicySetsResource(NCAResource):
             network_config = NetworkConfig(new_policy_set, peer_container,
                                            local_res_parser.policies_finder.policies_container)
 
-        except Exception as e:
-            return f'Badly formed policy list: {e}', 400
+        except Exception:
+            return 'Badly formed policy list', 400
 
         SanityQuery(network_config).exec()
         self.policy_sets_map[new_policy_set] = network_config
