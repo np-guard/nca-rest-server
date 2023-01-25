@@ -11,6 +11,19 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: actions/setup-python@5ccb29d8773c3f3f653e1705f474dfaa8a06a912
+        with:
+          python-version: 3.8
+          architecture: x64
+      - run: pip install -r requirements.txt
+      - run: pip install flake8
+      - name: Lint with flake8
+        run: flake8 nca --count --max-complexity=15 --max-line-length=127 --statistics
+
   rest-api:
     runs-on: ubuntu-latest
     steps:
