@@ -1,2 +1,2 @@
-network-config-analyzer==1.8.2
+network-config-analyzer==1.9.1
 Flask==2.2.2
